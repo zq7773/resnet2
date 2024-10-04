@@ -9,7 +9,7 @@ import random
 import uwb_dataset
 
 # Device configuration
-device = 'cuda' if torch.cuda.is_available() else 'cpu
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load the dataset
 columns, data = uwb_dataset.import_from_files()
