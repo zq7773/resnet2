@@ -169,7 +169,7 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # 构建ResNet-18模型
 # model = models.resnet18(pretrained=True)
-model = models.resnet18(weights=ResNet18_Weights.DEFAULT)  # 使用weights参数  2024.10.04
+model = models.resnet18(weights=None)  # 使用weights参数  2024.10.04
 # model.fc = nn.Linear(model.fc.in_features, 1)
 model.fc = nn.Sequential(
     nn.Linear(model.fc.in_features, 512),
