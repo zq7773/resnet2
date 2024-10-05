@@ -2,20 +2,20 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from PIL.Image import Image
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from transformers import ViTForImageClassification, ViTFeatureExtractor
 from transformers import DeiTForImageClassification, DeiTFeatureExtractor
-from transformers import CaiTForImageClassification, CaiTFeatureExtractor
-from transformers import ConvNextForImageClassification, ConvNextFeatureExtractor
-from transformers import T2TViTForImageClassification, T2TViTFeatureExtractor
+# from transformers import CaiTForImageClassification, CaiTFeatureExtractor
+# from transformers import ConvNextForImageClassification, ConvNextFeatureExtractor
+# from transformers import T2TViTForImageClassification, T2TViTFeatureExtractor
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
 
 # 加载ViT模型和特征提取器
 feature_extractor = ViTFeatureExtractor.from_pretrained('google/vit-base-patch16-224')
-model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', num_labels=1)  # 二分类任务
+model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', num_labels=1, ignore_mismatched_sizes=True) # 忽略大小不匹配 # 二分类任务
 model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
 # # 使用DeiT模型和特征提取器
