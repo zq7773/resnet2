@@ -80,7 +80,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # 训练和验证
 train_losses, train_accuracies = [], []
-num_epochs = 10
+num_epochs = 150
 
 for epoch in range(num_epochs):
     model.train()
