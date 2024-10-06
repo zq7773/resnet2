@@ -64,7 +64,7 @@ model = model.to(device)
 
 # 损失函数和优化器
 criterion = nn.BCEWithLogitsLoss()  # 二分类的损失函数
-optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
+optimizer = optim.AdamW(model.parameters(), lr=0.0001, weight_decay=1e-5)
 
 # 记录训练损失和准确率
 train_losses = []
@@ -85,6 +85,9 @@ for epoch in range(num_epochs):
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
+
+        # 梯度裁剪
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
         total_loss += loss.item()
 
