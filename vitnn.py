@@ -53,7 +53,7 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # 构建ViT模型
-model = timm.create_model('vit_base_patch16_224', pretrained=True)
+model = timm.create_model('vit_base_patch16_224', pretrained=False)
 
 # 修改分类头部，适应二分类任务
 model.head = nn.Linear(model.head.in_features, 1)

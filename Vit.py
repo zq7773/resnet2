@@ -8,15 +8,15 @@ from torchvision import transforms
 from transformers import ViTForImageClassification, ViTFeatureExtractor
 from transformers import DeiTForImageClassification, DeiTFeatureExtractor
 # from transformers import CaiTForImageClassification, CaiTFeatureExtractor
-# from transformers import ConvNextForImageClassification, ConvNextFeatureExtractor
+from transformers import ConvNextForImageClassification, ConvNextFeatureExtractor
 # from transformers import T2TViTForImageClassification, T2TViTFeatureExtractor
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
 
-# 加载ViT模型和特征提取器
-feature_extractor = ViTFeatureExtractor.from_pretrained('google/vit-base-patch16-224')
-model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', num_labels=1, ignore_mismatched_sizes=True) # 忽略大小不匹配 # 二分类任务
-model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
+# # 加载ViT模型和特征提取器
+# feature_extractor = ViTFeatureExtractor.from_pretrained('google/vit-base-patch16-224')
+# model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', num_labels=1, ignore_mismatched_sizes=True) # 忽略大小不匹配 # 二分类任务
+# model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
 # # 使用DeiT模型和特征提取器
 # feature_extractor = DeiTFeatureExtractor.from_pretrained('facebook/deit-base-distilled-patch16-224')
@@ -28,10 +28,10 @@ model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 # model = CaiTForImageClassification.from_pretrained('facebook/cait-xxs24-224', num_labels=1)
 # model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
-# # ConvNext模型和特征提取器
-# feature_extractor = ConvNextFeatureExtractor.from_pretrained('facebook/convnext-tiny-224')
-# model = ConvNextForImageClassification.from_pretrained('facebook/convnext-tiny-224', num_labels=1)
-# model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
+# ConvNext模型和特征提取器
+feature_extractor = ConvNextFeatureExtractor.from_pretrained('facebook/convnext-tiny-224')
+model = ConvNextForImageClassification.from_pretrained('facebook/convnext-tiny-224', num_labels=1, ignore_mismatched_sizes=True)
+model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
 # # T2T-ViT模型和特征提取器
 # feature_extractor = T2TViTFeatureExtractor.from_pretrained('google/t2t-vit-14')
