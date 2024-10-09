@@ -8,7 +8,8 @@ from torchvision import transforms
 from transformers import ViTForImageClassification, ViTFeatureExtractor
 from transformers import DeiTForImageClassification, DeiTFeatureExtractor
 # from transformers import CaiTForImageClassification, CaiTFeatureExtractor
-from transformers import ConvNextForImageClassification, ConvNextFeatureExtractor
+# from transformers import ConvNextForImageClassification, ConvNextFeatureExtractor
+from transformers import ConvNextForImageClassification, ConvNextImageProcessor
 # from transformers import T2TViTForImageClassification, T2TViTFeatureExtractor
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
@@ -28,9 +29,16 @@ import matplotlib.pyplot as plt
 # model = CaiTForImageClassification.from_pretrained('facebook/cait-xxs24-224', num_labels=1)
 # model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
-# ConvNext模型和特征提取器
-feature_extractor = ConvNextFeatureExtractor.from_pretrained('facebook/convnext-tiny-224')
-model = ConvNextForImageClassification.from_pretrained('facebook/convnext-tiny-224', num_labels=1, ignore_mismatched_sizes=True)
+# # ConvNext模型和特征提取器
+# processor = ConvNextImageProcessor.from_pretrained('facebook/convnext-tiny-224')
+# model = ConvNextForImageClassification.from_pretrained('facebook/convnext-tiny-224', num_labels=1, ignore_mismatched_sizes=True)
+
+# model.save_pretrained('./local_model')
+# processor.save_pretrained('./local_processor')
+# 从本地加载模型和处理器
+model = ConvNextForImageClassification.from_pretrained('./local_model')
+processor = ConvNextImageProcessor.from_pretrained('./local_processor')
+
 model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
 # # T2T-ViT模型和特征提取器
@@ -67,7 +75,7 @@ class ImageDataset(Dataset):
         return image, label
 
 # 创建数据集和数据加载器，使用ViT特征提取器
-transform = feature_extractor
+transform = processor
 train_dataset = ImageDataset('train', 'train.txt', transform)
 val_dataset = ImageDataset('valid', 'val.txt', transform)
 
