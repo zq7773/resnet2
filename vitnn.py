@@ -9,6 +9,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import timm
 import matplotlib.pyplot as plt
 
+os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
+os.environ['HTTPS_PROXY'] = 'https://127.0.0.1:7890'
 # 自定义数据集类
 class ImageDataset(Dataset):
     def __init__(self, folder_path, labels_file, transform=None):
@@ -64,7 +66,7 @@ model = model.to(device)
 
 # 损失函数和优化器
 criterion = nn.BCEWithLogitsLoss()  # 二分类的损失函数
-optimizer = optim.AdamW(model.parameters(), lr=0.0001, weight_decay=1e-5)
+optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
 
 # 记录训练损失和准确率
 train_losses = []
@@ -85,9 +87,6 @@ for epoch in range(num_epochs):
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
-
-        # 梯度裁剪
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
         total_loss += loss.item()
 

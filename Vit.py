@@ -1,3 +1,4 @@
+import datetime
 import os
 import torch
 import torch.nn as nn
@@ -13,6 +14,7 @@ from transformers import ConvNextForImageClassification, ConvNextImageProcessor
 # from transformers import T2TViTForImageClassification, T2TViTFeatureExtractor
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
+from torch.utils.tensorboard import SummaryWriter
 
 # # 加载ViT模型和特征提取器
 # feature_extractor = ViTFeatureExtractor.from_pretrained('google/vit-base-patch16-224')
@@ -89,7 +91,15 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 # 训练和验证
 train_losses, train_accuracies = [], []
 num_epochs = 150
-
+best_accuracy = -1
+train_start_time = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
+log_dir = './logs/' + train_start_time
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+writer = SummaryWriter(log_dir)
+model_save_path = "./model/" + str(train_start_time)
+if not os.path.exists(model_save_path):
+    os.makedirs(model_save_path)
 for epoch in range(num_epochs):
     model.train()
     total_loss, correct_train, total_train = 0.0, 0, 0
@@ -104,7 +114,7 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         total_loss += loss.item()
-        predicted = torch.sigmoid(outputs) > 0.5
+        predicted = torch.sigmoid(outputs) > 0.3
         correct_train += (predicted == labels).sum().item()
         total_train += labels.size(0)
 
@@ -112,6 +122,8 @@ for epoch in range(num_epochs):
     train_accuracy = correct_train / total_train
     train_losses.append(avg_loss)
     train_accuracies.append(train_accuracy)
+    writer.add_scalar('train_loss', avg_loss, epoch)
+    writer.add_scalar('train_accuracy', train_accuracy, epoch)
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
 
     # 验证
@@ -129,7 +141,18 @@ for epoch in range(num_epochs):
     precision = precision_score(all_labels, all_preds)
     recall = recall_score(all_labels, all_preds)
     f1 = f1_score(all_labels, all_preds)
+    writer.add_scalar('val_accuracy', accuracy, epoch)
+    writer.add_scalar('val_precision', precision, epoch)
+    writer.add_scalar('val_recall', recall, epoch)
+    writer.add_scalar('val_f1', f1, epoch)
     print(f'Validation Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1 Score: {f1:.4f}')
+    # 保存最佳模型
+    if best_accuracy == -1 or accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_epoch = epoch
+        torch.save(model.state_dict(), model_save_path + '/best_model.pth')
+
+
 
 # 绘制训练曲线
 plt.figure(figsize=(12, 5))
