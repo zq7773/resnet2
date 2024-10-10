@@ -1,4 +1,3 @@
-import datetime
 import os
 import torch
 import torch.nn as nn
@@ -125,7 +124,7 @@ for epoch in range(num_epochs):
     writer.add_scalar('train_loss', avg_loss, epoch)
     writer.add_scalar('train_accuracy', train_accuracy, epoch)
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
-
+    # test
     # 验证
     model.eval()
     all_labels, all_preds = [], []
@@ -133,7 +132,7 @@ for epoch in range(num_epochs):
         for images, labels in val_loader:
             images, labels = images.to('cuda'), labels.to('cuda').view(-1, 1)
             outputs = model(images).logits
-            predicted = torch.sigmoid(outputs) > 0.5
+            predicted = torch.sigmoid(outputs) > 0.3
             all_labels.extend(labels.cpu().numpy())
             all_preds.extend(predicted.cpu().numpy())
 

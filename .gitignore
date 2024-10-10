@@ -1,2 +1,4 @@
 /train/
 /valid/
+/local_model/
+/local_processor/
