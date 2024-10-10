@@ -38,7 +38,7 @@ from torch.utils.tensorboard import SummaryWriter
 # model.save_pretrained('./local_model')
 # processor.save_pretrained('./local_processor')
 # 从本地加载模型和处理器
-model = ConvNextForImageClassification.from_pretrained('./local_model')
+model = ConvNextForImageClassification.from_pretrained('./local_model', num_labels=1)
 processor = ConvNextImageProcessor.from_pretrained('./local_processor')
 
 model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
@@ -86,7 +86,7 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # 损失函数和优化器
 criterion = nn.BCEWithLogitsLoss()  # 二分类的损失函数
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # 训练和验证
 train_losses, train_accuracies = [], []
