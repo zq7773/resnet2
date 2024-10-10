@@ -1,3 +1,4 @@
+import datetime
 import os
 import torch
 import torch.nn as nn
@@ -8,6 +9,7 @@ from PIL import Image
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import timm
 import matplotlib.pyplot as plt
+from torch.utils.tensorboard import SummaryWriter
 
 os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
 os.environ['HTTPS_PROXY'] = 'https://127.0.0.1:7890'
@@ -73,6 +75,16 @@ train_losses = []
 train_accuracies = []
 num_epochs = 150  # 训练轮数
 
+best_accuracy = -1
+train_start_time = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
+log_dir = './logs/' + train_start_time
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+writer = SummaryWriter(log_dir)
+model_save_path = "./model/" + str(train_start_time)
+if not os.path.exists(model_save_path):
+    os.makedirs(model_save_path)
+
 for epoch in range(num_epochs):
     model.train()
     total_loss = 0.0
@@ -121,10 +133,21 @@ for epoch in range(num_epochs):
     recall = recall_score(all_labels, all_preds)
     f1 = f1_score(all_labels, all_preds)
 
+    writer.add_scalar('val_accuracy', accuracy, epoch)
+    writer.add_scalar('val_precision', precision, epoch)
+    writer.add_scalar('val_recall', recall, epoch)
+    writer.add_scalar('val_f1', f1, epoch)
+
     print(f'Validation Accuracy: {accuracy:.4f}')
     print(f'Validation Precision: {precision:.4f}')
     print(f'Validation Recall: {recall:.4f}')
     print(f'Validation F1 Score: {f1:.4f}\n')
+
+    # 保存最佳模型
+    if best_accuracy == -1 or accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_epoch = epoch
+        torch.save(model.state_dict(), model_save_path + '/best_model.pth')
 
 # 绘制训练损失和准确率
 plt.figure(figsize=(12, 5))
