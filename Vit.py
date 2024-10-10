@@ -137,7 +137,7 @@ for epoch in range(num_epochs):
             all_labels.extend(labels.cpu().numpy())
             all_preds.extend(predicted.cpu().numpy())
 
-    accuracy = accuracy_score(all_labels, all_preds)
+    accuracy = accuracy_score(all_labels, all_preds,zero_division=0)
     precision = precision_score(all_labels, all_preds)
     recall = recall_score(all_labels, all_preds)
     f1 = f1_score(all_labels, all_preds)
