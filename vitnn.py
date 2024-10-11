@@ -68,7 +68,7 @@ model = model.to(device)
 
 # 损失函数和优化器
 criterion = nn.BCEWithLogitsLoss()  # 二分类的损失函数
-optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
+optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=1e-5)
 
 # 记录训练损失和准确率
 train_losses = []
@@ -111,6 +111,10 @@ for epoch in range(num_epochs):
     train_accuracy = correct_train / total_train
     train_losses.append(avg_loss)
     train_accuracies.append(train_accuracy)
+
+    #tensorboard
+    writer.add_scalar('train_loss', avg_loss, epoch)
+    writer.add_scalar('train_accuracy', train_accuracy, epoch)
 
     print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {avg_loss:.4f}, Train Accuracy: {train_accuracy:.4f}')
 
